@@ -1,59 +1,96 @@
-# EsubalewPortfolio
+# Esubalew Gashaw Portfolio
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.20.
+A modern Angular portfolio for Esubalew Gashaw, showcasing software development experience, projects, skills, education, and contact information.
 
-## Development server
+## Overview
 
-To start a local development server, run:
+This portfolio includes:
+
+- premium landing page hero section
+- about and skills overview
+- process/workflow section
+- work experience timeline
+- project cards and modal details
+- education and certificate highlights
+- contact section with validation and mailto integration
+- dark/light theme toggle
+- responsive design for mobile and desktop
+
+## Tech Stack
+
+- Angular 21
+- TypeScript
+- SCSS
+- Angular Forms
+- Vitest via Angular test runner
+
+## Project Structure
+
+```bash
+src/
+  app/
+    app.ts
+    app.html
+    app.scss
+    app.spec.ts
+    models/
+    services/
+  assets/
+    images/
+    esubalew-resume.pdf
+```
+
+## Getting Started
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Run locally
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Then open:
 
 ```bash
-ng generate component component-name
+http://localhost:4200/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Build for production
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Run tests
 
 ```bash
-ng test
+npx ng test --watch=false
 ```
 
-## Running end-to-end tests
+## Contact form behavior
 
-For end-to-end (e2e) testing, run:
+The contact section validates user input before opening the user’s default mail app with a prefilled message to:
 
-```bash
-ng e2e
+```text
+esubalew.gashiaw@gmail.com
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+This is a frontend portfolio pattern and does not require a backend email service.
 
-## Additional Resources
+## Deployment
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This project is ready to deploy on any static hosting service compatible with Angular build output, including:
+
+- Netlify
+- Vercel
+- Firebase Hosting
+- GitHub Pages
+
+## Author
+
+Esubalew Gashaw Admas
