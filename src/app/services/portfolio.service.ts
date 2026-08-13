@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-  Profile,
-  SkillGroup,
-  Experience,
-  Education,
-  Project,
+  Profile, SkillGroup, Experience, Education, Project, Stat, ProcessStep,
 } from '../models/portfolio.model';
 
 @Injectable({ providedIn: 'root' })
@@ -17,35 +13,39 @@ export class PortfolioService {
     phone: '+251-965496587',
     linkedin: 'linkedin.com/in/esubalew-gashaw',
     about:
-      'Results-driven Software Developer with hands-on experience building responsive web and cross-platform mobile applications. Proficient in React, Angular, and Flutter, with strong backend integration skills using Java Spring Boot. Passionate about building secure, scalable, user-centric digital solutions.',
+      'Results-driven Software Developer with hands-on experience building responsive web and cross-platform mobile applications. Proficient in React, Angular, and Flutter, with strong backend integration skills using Java Spring Boot.',
+    manifesto:
+      "I don't just write code — I build things people trust with their money, their data, and their time. That's why I care as much about a clean API contract as I do about a pixel-perfect button.",
+    availability: 'Available for freelance & full-time work',
+    responsePromise: 'I typically reply within 24 hours',
+    photo: '/assets/images/esuba 1.jpg',
   };
 
+  private readonly companies: string[] = ['Bunna Bank', 'Blata Technology Group', 'Yegna Microfinance S.C'];
+
+  private readonly stats: Stat[] = [
+    { value: 3, suffix: '+', label: 'Companies Worked With' },
+    { value: 4, suffix: '+', label: 'Projects Delivered' },
+    { value: 2, suffix: '+', label: 'Years of Experience' },
+    { value: 3, suffix: '', label: 'Tech Stacks Mastered' },
+  ];
+
+  private readonly processSteps: ProcessStep[] = [
+    { step: '01', title: 'Understand', description: 'I start by listening — what problem are we actually solving, and for whom.' },
+    { step: '02', title: 'Design', description: 'I map the data flow and UI before writing a line of code, so nothing gets rebuilt twice.' },
+    { step: '03', title: 'Build', description: 'Clean, modular code — frontend and backend integrated early, tested as I go.' },
+    { step: '04', title: 'Deliver', description: 'Deployed, documented, and handed over with room to grow — not a dead end.' },
+  ];
+
   private readonly skillGroups: SkillGroup[] = [
-    {
-      title: 'Frontend Development',
-      skills: ['JavaScript', 'TypeScript', 'Dart', 'React', 'Angular', 'Flutter'],
-    },
-    {
-      title: 'Backend Development',
-      skills: ['Java', 'Node.js', 'Spring Boot', 'MySQL', 'PostgreSQL'],
-    },
-    {
-      title: 'Other',
-      skills: [
-              'Full-Stack Architecture & System Design',
-              'RESTful API Engineering & Integration',
-              'Relational Database Modeling & Query Optimization',
-              'State Management & Reactive Programming',
-              'Software Security, Auth (OAuth2/JWT) & Form Validation',
-              'Version Control (Git) & Automated CI/CD Deployment',
-              'Agile Software Development & Domain-Driven Design',
-            ],
-    },
+    { title: 'Frontend Development', skills: ['JavaScript', 'TypeScript', 'Dart', 'React', 'Angular', 'Flutter'] },
+    { title: 'Backend Development', skills: ['Java', 'Node.js', 'Spring Boot', 'MySQL', 'PostgreSQL'] },
+    { title: 'Other', skills: ['REST API Design', 'Microservices', 'System Integration', 'Git'] },
   ];
 
   private readonly experiences: Experience[] = [
     {
-      period: '06/2026 – Present',
+      period: '07/2026 – Present',
       location: 'Addis Ababa, Ethiopia',
       company: 'Bunna Bank',
       role: 'Frontend Developer',
@@ -53,12 +53,12 @@ export class PortfolioService {
         'Building highly responsive web and cross-platform mobile applications using React, Angular, and Flutter. Integrating with Java Spring Boot backends for secure, scalable digital banking solutions.',
     },
     {
-      period: '05/2025 – 06/2026',
+      period: '05/2025 – 07/2026',
       location: 'Addis Ababa',
       company: 'Blata Technology Group',
       role: 'Software Developer',
       description:
-        'Led development on the Blata Technology website (React, Node.js, PostgreSQL) and worked as a Full-Stack Developer on the Atuye Market LLC project (Angular, Spring Boot, MySQL). Built RESTful APIs and delivered scalable web applications.',
+        'Led development on the Blata Technology website (React, Node.js, PostgreSQL) and worked as a Full-Stack Developer on the Atuye Market LLC project (Angular, Spring Boot, MySQL).',
     },
     {
       period: '06/2024 – 06/2025',
@@ -66,7 +66,7 @@ export class PortfolioService {
       company: 'Yegna Microfinance S.C',
       role: 'Junior Web Developer',
       description:
-        'Handled customer inquiries and service operations while administering web platforms, updating content, and resolving technical issues.',
+        'Handled customer inquiries and service operations while administering web platforms and resolving technical issues.',
     },
   ];
 
@@ -86,9 +86,11 @@ export class PortfolioService {
     {
       period: '07/2026 – Present',
       title: 'Bunna Bank – Transaction Settlement & Integration Management Platform',
-      role: 'Frontend Developer',
+      role: 'Full-Stack Developer',
       stack: 'Angular 17+, TypeScript, RxJS, SCSS, Spring Boot, REST APIs',
-      points: [
+      image: '/assets/images/proj1.png',
+      demoUrl: 'https://www.bunnabank.com',
+      bullets: [
         'Architected modular, domain-driven Angular standalone component structures for real-time transaction batching and automated reconciliation.',
         'Engineered dynamic dashboard interfaces featuring real-time settlement monitoring, interactive transaction filters, and audit trail logs.',
         'Integrated core frontend application modules with secure, enterprise-grade REST APIs built on Java Spring Boot.',
@@ -98,14 +100,15 @@ export class PortfolioService {
     },
     {
       period: '10/2025 – Present',
-      title: 'Atuye Market LLC – Financial Analytics Platform',
+      title: 'Atuye Market LLC – Website & Application',
       role: 'Full-Stack Developer',
-      stack: 'Angular, TypeScript, Spring Boot, MySQL, REST APIs',
-      points: [
-        'Engineered an end-to-end web application providing real-time financial tracking and market analytics dashboards.',
-        'Integrated external market APIs (Finnhub) with custom Spring Boot RESTful services for automated data synchronization.',
-        'Designed relational database schemas and optimized complex MySQL query performance for efficient reporting.',
-        'Delivered responsive, component-driven user interfaces using Angular standalone architecture and modern styling.',
+      stack: 'Angular, Spring Boot, MySQL',
+      image: '/assets/images/atuye.png',
+      bullets: [
+        'Designed the database schema and built RESTful APIs connecting front-end and back-end systems.',
+        'Developed a scalable, responsive Angular front end end-to-end.',
+        'Optimized queries and data structures for efficient, reliable data management.',
+        'Maintained and deployed the platform for smooth, ongoing operation.',
       ],
     },
     {
@@ -113,43 +116,30 @@ export class PortfolioService {
       title: 'Blata Technology Group Website',
       role: 'Full-Stack Developer',
       stack: 'React, Node.js, PostgreSQL',
-      points: [
-        'Developed and deployed a responsive company website.',
-        'Built and integrated RESTful APIs for seamless communication.',
-        'Designed and optimized database schemas and queries.',
-        'Improved performance, usability, and maintainability through clean code.',
+      image: '/assets/images/blata.png',
+      demoUrl: 'https://blatatechnology.net',
+      bullets: [
+        'Developed and deployed a responsive company website from scratch.',
+        'Built and integrated RESTful APIs for seamless front-end/back-end communication.',
+        'Designed and optimized the PostgreSQL schema for reliability.',
+        'Supported ongoing deployment, maintenance, and updates.',
       ],
     },
   ];
 
   private readonly certificates: string[] = [
-    'Artificial Intelligence — Udacity',
-    'Android Developer Fundamentals — Udacity',
-    'Digital Customer Onboarding — Bunna Bank',
+    'Artificial Intelligence — Udacity.com',
+    'Android Developer Fundamentals — Udacity.com',
     'Job Employability Skills — Dereja.com',
   ];
 
-  getProfile(): Profile {
-    return this.profile;
-  }
-
-  getSkillGroups(): SkillGroup[] {
-    return this.skillGroups;
-  }
-
-  getExperiences(): Experience[] {
-    return this.experiences;
-  }
-
-  getEducation(): Education[] {
-    return this.education;
-  }
-
-  getProjects(): Project[] {
-    return this.projects;
-  }
-
-  getCertificates(): string[] {
-    return this.certificates;
-  }
+  getProfile(): Profile { return this.profile; }
+  getCompanies(): string[] { return this.companies; }
+  getStats(): Stat[] { return this.stats; }
+  getProcessSteps(): ProcessStep[] { return this.processSteps; }
+  getSkillGroups(): SkillGroup[] { return this.skillGroups; }
+  getExperiences(): Experience[] { return this.experiences; }
+  getEducation(): Education[] { return this.education; }
+  getProjects(): Project[] { return this.projects; }
+  getCertificates(): string[] { return this.certificates; }
 }

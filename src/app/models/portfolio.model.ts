@@ -6,7 +6,10 @@ export interface Profile {
   phone: string;
   linkedin: string;
   about: string;
-  imageUrl?: string;
+  manifesto: string;
+  availability: string;
+  responsePromise: string;
+  photo: string; // hero photo path
 }
 
 export interface SkillGroup {
@@ -34,5 +37,25 @@ export interface Project {
   title: string;
   role: string;
   stack?: string;
-  points: string[];
+  image: string;
+  bullets: string[];
+  demoUrl?: string;
+  sourceUrl?: string;
+}
+
+export interface Stat {
+  value: number;
+  suffix: string;
+  label: string;
+}
+
+export interface ProcessStep {
+  step: string;
+  title: string;
+  description: string;
+}
+
+export interface NavLink {
+  id: string;
+  label: string;
 }

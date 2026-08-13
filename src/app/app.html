@@ -1,126 +1,399 @@
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="container navbar__inner">
-    <div class="navbar__logo">
-     <img src="/assets/images/esuba.jpg" alt="Esubalew Gashaw" class="navbar__avatar" />     
-     <span>Esubalew<span class="accent">.</span></span>
-    </div>
-    <div class="navbar__links">
-      <a href="#about">About</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
-      <a href="#education">Education</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </div>
-</nav>
+<div class="portfolio-app" [class.theme-dark]="theme === 'dark'">
+  <nav class="navbar" [class.navbar--scrolled]="isScrolled">
+    <div class="container navbar__inner">
+      <div class="navbar__logo">
+        <img [src]="profile.photo" alt="Esubalew Gashaw" class="navbar__avatar" />
+        <span>Esubalew<span class="accent">.</span></span>
+      </div>
 
-<!-- Hero -->
-<header class="hero" *ngIf="profile">
-  <div class="container hero__inner">
-    <div class="hero__text">
-      <p class="hero__eyebrow">Hello, I'm</p>
-      <h1>{{ profile.name }}</h1>
-      <h2>{{ profile.title }}</h2>
-      <p class="hero__location">📍 {{ profile.location }}</p>
-      <div class="hero__cta">
-        <a href="#contact" class="btn btn--primary">Get in Touch</a>
-        <a href="#projects" class="btn btn--ghost">View Projects</a>
+      <div class="navbar__links" [class.open]="isMobileMenuOpen">
+        <a *ngFor="let link of navLinks"
+           [href]="'#' + link.id"
+           [class.active]="activeSection === link.id"
+           (click)="closeMobileMenu()">
+          {{ link.label }}
+        </a>
+      </div>
+
+      <div class="navbar__actions">
+        <button class="theme-toggle" type="button" (click)="toggleTheme()" aria-label="Toggle theme">
+          {{ theme === 'dark' ? '☀️' : '🌙' }}
+        </button>
+
+        <button class="hamburger" [class.open]="isMobileMenuOpen" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </div>
-  </div>
-</header>
+  </nav>
 
-<!-- About -->
-<section id="about" class="section" *ngIf="profile">
-  <div class="container">
-    <h3 class="section__title">About Me</h3>
-    <p class="about__text">{{ profile.about }}</p>
+  <div class="mobile-overlay" [class.visible]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
 
-    <div class="skills">
-      <div class="skills__group" *ngFor="let group of skillGroups">
-        <h4>{{ group.title }}</h4>
-        <div class="skills__chips">
-          <span class="chip" *ngFor="let skill of group.skills">{{ skill }}</span>
+  <header class="hero" *ngIf="profile">
+    <div class="hero__mesh"></div>
+    <div class="hero__shape hero__shape--one"></div>
+    <div class="hero__shape hero__shape--two"></div>
+    <div class="hero__glow"></div>
+
+    <div class="container hero__inner">
+      <div class="hero__text">
+        <span class="badge">
+          <span class="badge__dot"></span>
+          {{ profile.availability }}
+        </span>
+
+        <p class="hero__eyebrow">Product-minded Full-Stack Developer</p>
+        <h1>{{ profile.name }}</h1>
+        <h2>{{ profile.title }}</h2>
+
+        <p class="hero__summary">
+          I design and deliver digital products that feel intuitive, scale cleanly,
+          and create measurable value for businesses and users.
+        </p>
+
+        <p class="hero__location">📍 {{ profile.location }}</p>
+
+        <div class="hero__meta" aria-label="Core technologies">
+          <span>Angular</span>
+          <span>React</span>
+          <span>Spring Boot</span>
+          <span>Flutter</span>
+        </div>
+
+        <div class="hero__cta">
+          <a href="#contact" class="btn btn--primary btn--magnetic">Book a Call →</a>
+          <a href="#projects" class="btn btn--ghost">Explore Work</a>
+          <a href="/assets/esubalew-resume.pdf" class="btn btn--secondary" target="_blank" rel="noopener">Download CV</a>
+        </div>
+
+        <div class="hero__trust" aria-label="Career highlights">
+          <div class="hero__metric">
+            <strong>3+</strong>
+            <span>Years</span>
+          </div>
+          <div class="hero__metric">
+            <strong>4+</strong>
+            <span>Projects</span>
+          </div>
+          <div class="hero__metric">
+            <strong>100%</strong>
+            <span>Ownership</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__visual" aria-label="Profile preview">
+        <div class="hero__panel">
+          <div class="hero__panel-card hero__panel-card--top">
+            <span class="panel-label">Core Stack</span>
+            <strong>Angular • React • Spring Boot</strong>
+          </div>
+
+          <div class="hero__photo-wrap">
+            <div class="hero__ring hero__ring--one"></div>
+            <div class="hero__ring hero__ring--two"></div>
+            <img [src]="profile.photo" alt="{{ profile.name }}" class="hero__photo" />
+          </div>
+
+          <div class="hero__panel-card hero__panel-card--bottom">
+            <span class="panel-label">Available</span>
+            <strong>Freelance • Full-time</strong>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </header>
 
-<!-- Experience -->
-<section id="experience" class="section section--alt">
-  <div class="container">
-    <h3 class="section__title">Professional Experience</h3>
-    <div class="timeline">
-      <div class="timeline__item" *ngFor="let exp of experiences">
-        <div class="timeline__marker"></div>
-        <div class="timeline__content">
-          <span class="timeline__period">{{ exp.period }} · {{ exp.location }}</span>
-          <h4>{{ exp.role }} — {{ exp.company }}</h4>
-          <p>{{ exp.description }}</p>
+  <section class="companies">
+    <div class="container">
+      <p class="companies__label">Trusted by / worked with</p>
+      <div class="companies__row">
+        <span class="companies__item" *ngFor="let c of companies">{{ c }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section" *ngIf="profile">
+    <div class="container">
+      <h3 class="section__title">About Me</h3>
+      <p class="about__text">{{ profile.about }}</p>
+      <blockquote class="manifesto">"{{ profile.manifesto }}"</blockquote>
+
+      <div class="skills">
+        <div class="skills__group" *ngFor="let group of skillGroups">
+          <h4>{{ group.title }}</h4>
+          <div class="skills__chips">
+            <span class="chip" *ngFor="let skill of group.skills">{{ skill }}</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Projects -->
-<section id="projects" class="section">
-  <div class="container">
-    <h3 class="section__title">Projects</h3>
-    <div class="projects-grid">
-      <div class="card" *ngFor="let project of projects">
-        <span class="card__period">{{ project.period }}</span>
-        <h4>{{ project.title }}</h4>
-        <p class="card__role">{{ project.role }}</p>
-        <p class="card__stack" *ngIf="project.stack">{{ project.stack }}</p>
-        <ul>
-          <li *ngFor="let point of project.points">{{ point }}</li>
+  <section id="stats-section" class="stats">
+    <div class="container stats__grid">
+      <div class="stats__item" *ngFor="let s of stats; let i = index">
+        <span class="stats__value">{{ animatedValues[i] }}{{ s.suffix }}</span>
+        <span class="stats__label">{{ s.label }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="process" class="section section--alt">
+    <div class="container">
+      <h3 class="section__title">How I Work</h3>
+      <div class="process-grid">
+        <div class="process-card" *ngFor="let step of processSteps">
+          <span class="process-card__step">{{ step.step }}</span>
+          <h4>{{ step.title }}</h4>
+          <p>{{ step.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="section">
+    <div class="container">
+      <h3 class="section__title">Professional Experience</h3>
+      <div class="timeline">
+        <div class="timeline__item" *ngFor="let exp of experiences">
+          <div class="timeline__marker"></div>
+          <div class="timeline__content">
+            <span class="timeline__period">{{ exp.period }} · {{ exp.location }}</span>
+            <h4>{{ exp.role }} — {{ exp.company }}</h4>
+            <p>{{ exp.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt outcomes">
+    <div class="container">
+      <h3 class="section__title">What I Deliver</h3>
+
+      <div class="outcomes__grid">
+        <article class="outcome-card" *ngFor="let item of outcomeHighlights">
+          <span class="outcome-card__value">{{ item.value }}</span>
+          <h4>{{ item.title }}</h4>
+          <p>{{ item.description }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section section--alt">
+    <div class="container">
+      <h3 class="section__title">Projects</h3>
+
+      <div class="project-filters" aria-label="Project filters">
+        <button
+          type="button"
+          *ngFor="let filter of projectFilters"
+          class="filter-btn"
+          [class.active]="selectedFilter === filter"
+          (click)="filterProjects(filter)">
+          {{ filter === 'all' ? 'All' : filter }}
+        </button>
+      </div>
+
+      <div class="projects-grid">
+        <div class="card card--glass" *ngFor="let project of filteredProjects">
+          <div class="card__image-wrap">
+            <img [src]="project.image" [alt]="project.title" class="card__image" />
+            <span class="card__period card__period--overlay">{{ project.period }}</span>
+          </div>
+
+          <div class="card__body">
+            <h4>{{ project.title }}</h4>
+            <p class="card__role">{{ project.role }}</p>
+            <p class="card__stack" *ngIf="project.stack">{{ project.stack }}</p>
+
+            <ul class="card__bullets">
+              <li *ngFor="let point of project.bullets">{{ point }}</li>
+            </ul>
+
+            <div class="card__actions">
+              <button type="button" class="project-detail-btn" (click)="openProject(project)">
+                View Details
+              </button>
+              <a *ngIf="project.demoUrl"
+                 [href]="project.demoUrl"
+                 target="_blank"
+                 rel="noopener"
+                 class="project-link-btn">
+                Live Demo
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="section">
+    <div class="container">
+      <h3 class="section__title">Education</h3>
+      <div class="timeline">
+        <div class="timeline__item" *ngFor="let edu of education">
+          <div class="timeline__marker"></div>
+          <div class="timeline__content">
+            <span class="timeline__period">{{ edu.period }}</span>
+            <h4>{{ edu.title }}</h4>
+            <p class="card__role">{{ edu.school }}</p>
+            <ul *ngIf="edu.details.length">
+              <li *ngFor="let d of edu.details">{{ d }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h4 class="certs__title">Certificates</h4>
+      <ul class="certs">
+        <li *ngFor="let cert of certificates">🎓 {{ cert }}</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section testimonials">
+    <div class="container">
+      <h3 class="section__title">What I Bring</h3>
+
+      <div class="testimonials__grid">
+        <article class="testimonial" *ngFor="let item of testimonials">
+          <p class="testimonial__quote">"{{ item.quote }}"</p>
+          <div class="testimonial__author">{{ item.author }}</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section why-hire">
+    <div class="container">
+      <h3 class="section__title">Why Hire Me</h3>
+
+      <div class="why-hire__grid">
+        <article class="why-hire__card" *ngFor="let item of hireReasons">
+          <div class="why-hire__icon">✓</div>
+          <h4>{{ item.title }}</h4>
+          <p>{{ item.description }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="container">
+      <h3>Have a project in mind?</h3>
+      <p>{{ profile.responsePromise }}.</p>
+      <a href="#contact" class="btn btn--primary btn--magnetic">Let's Build Something →</a>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact" *ngIf="profile">
+    <div class="container contact__inner">
+      <h3 class="section__title">Get In Touch</h3>
+      <p>I'm open to junior/mid frontend and full-stack opportunities. Feel free to reach out.</p>
+
+      <form class="contact-form" (ngSubmit)="submitContactForm()" novalidate>
+        <div class="contact-form__field">
+          <label for="contact-name">Name</label>
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            [(ngModel)]="contact.name"
+            required
+            [class.contact-form__input--error]="(contactSubmitted && !!contactErrors.name) || (!!contact.name.trim() && !!contactErrors.name)"
+            (input)="validateContactField('name')"
+            (blur)="validateContactField('name')"
+          />
+          <div class="form-feedback" *ngIf="contactSubmitted || contact.name.trim().length > 0">{{ contactErrors.name || '' }}</div>
+        </div>
+
+        <div class="contact-form__field">
+          <label for="contact-email">Email</label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            [(ngModel)]="contact.email"
+            required
+            email
+            [class.contact-form__input--error]="(contactSubmitted && !!contactErrors.email) || (!!contact.email.trim() && !!contactErrors.email)"
+            (input)="validateContactField('email')"
+            (blur)="validateContactField('email')"
+          />
+          <div class="form-feedback" *ngIf="contactSubmitted || contact.email.trim().length > 0">{{ contactErrors.email || '' }}</div>
+        </div>
+
+        <div class="contact-form__field">
+          <label for="contact-message">Message</label>
+          <textarea
+            id="contact-message"
+            name="message"
+            rows="5"
+            [(ngModel)]="contact.message"
+            required
+            [class.contact-form__input--error]="(contactSubmitted && !!contactErrors.message) || (!!contact.message.trim() && !!contactErrors.message)"
+            (input)="validateContactField('message')"
+            (blur)="validateContactField('message')"
+          ></textarea>
+          <div class="form-feedback" *ngIf="contactSubmitted || contact.message.trim().length > 0">{{ contactErrors.message || '' }}</div>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--magnetic form-submit">Send Message</button>
+
+        <div class="form-feedback success" *ngIf="submitSuccess">
+          Your email app should open with your message. If it does not, email me at {{ profile.email }}.
+        </div>
+      </form>
+
+      <div class="contact__links">
+        <a [href]="'mailto:' + profile.email">✉️ {{ profile.email }}</a>
+        <a [href]="'tel:' + profile.phone">📞 {{ profile.phone }}</a>
+        <a [href]="'https://' + profile.linkedin" target="_blank" rel="noopener">🔗 {{ profile.linkedin }}</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© {{ currentYear }} {{ profile.name }}. Built with Angular.</p>
+  </footer>
+
+  <div class="project-modal" *ngIf="selectedProject" (click)="closeProject()">
+    <div class="project-modal__content" (click)="$event.stopPropagation()">
+      <button type="button" class="project-modal__close" (click)="closeProject()" aria-label="Close project details">×</button>
+
+      <div class="project-modal__image-wrap">
+        <img [src]="selectedProject.image" [alt]="selectedProject.title" class="project-modal__image" />
+      </div>
+
+      <div class="project-modal__body">
+        <p class="project-modal__period">{{ selectedProject.period }}</p>
+        <h3>{{ selectedProject.title }}</h3>
+        <p class="project-modal__role">{{ selectedProject.role }}</p>
+        <p class="project-modal__stack" *ngIf="selectedProject.stack">{{ selectedProject.stack }}</p>
+
+        <ul class="project-modal__list">
+          <li *ngFor="let point of selectedProject.bullets">{{ point }}</li>
         </ul>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- Education -->
-<section id="education" class="section section--alt">
-  <div class="container">
-    <h3 class="section__title">Education</h3>
-    <div class="timeline">
-      <div class="timeline__item" *ngFor="let edu of education">
-        <div class="timeline__marker"></div>
-        <div class="timeline__content">
-          <span class="timeline__period">{{ edu.period }}</span>
-          <h4>{{ edu.title }}</h4>
-          <p class="card__role">{{ edu.school }}</p>
-          <ul *ngIf="edu.details.length">
-            <li *ngFor="let d of edu.details">{{ d }}</li>
-          </ul>
+        <div class="project-modal__actions" *ngIf="selectedProject.demoUrl || selectedProject.sourceUrl">
+          <a *ngIf="selectedProject.demoUrl" [href]="selectedProject.demoUrl" target="_blank" rel="noopener" class="project-link-btn project-link-btn--modal">
+            Open Live Project
+          </a>
+          <a *ngIf="selectedProject.sourceUrl" [href]="selectedProject.sourceUrl" target="_blank" rel="noopener" class="project-link-btn project-link-btn--modal project-link-btn--secondary">
+            Source Code
+          </a>
         </div>
       </div>
     </div>
-
-    <h4 class="certs__title">Certificates</h4>
-    <ul class="certs">
-      <li *ngFor="let cert of certificates">🎓 {{ cert }}</li>
-    </ul>
   </div>
-</section>
 
-<!-- Contact -->
-<section id="contact" class="section contact" *ngIf="profile">
-  <div class="container contact__inner">
-    <h3 class="section__title">Get In Touch</h3>
-    <p>I'm open to junior/mid frontend and full-stack opportunities. Feel free to reach out.</p>
-    <div class="contact__links">
-      <a [href]="'mailto:' + profile.email">✉️ {{ profile.email }}</a>
-      <a [href]="'tel:' + profile.phone">📞 {{ profile.phone }}</a>
-      <a [href]="'https://' + profile.linkedin" target="_blank" rel="noopener">🔗 {{ profile.linkedin }}</a>
-    </div>
-  </div>
-</section>
-
-<footer class="footer">
-  <p>© {{ currentYear }} {{ profile.name }}. Built with Angular.</p>
-</footer>
+  <button class="back-to-top" [class.visible]="showBackToTop" (click)="scrollToTop()" aria-label="Back to top">
+    ↑
+  </button>
+</div>
