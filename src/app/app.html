@@ -1,399 +1,584 @@
-<div class="portfolio-app" [class.theme-dark]="theme === 'dark'">
-  <nav class="navbar" [class.navbar--scrolled]="isScrolled">
-    <div class="container navbar__inner">
-      <div class="navbar__logo">
-        <img [src]="profile.photo" alt="Esubalew Gashaw" class="navbar__avatar" />
-        <span>Esubalew<span class="accent">.</span></span>
-      </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-      <div class="navbar__links" [class.open]="isMobileMenuOpen">
-        <a *ngFor="let link of navLinks"
-           [href]="'#' + link.id"
-           [class.active]="activeSection === link.id"
-           (click)="closeMobileMenu()">
-          {{ link.label }}
-        </a>
-      </div>
+<!-- ═══════════════ INTRO LOADER (once per session, click to skip) ═══════════════ -->
+@if (loading()) {
+  <div class="loader" [class.is-done]="loaderDone()" (click)="finishLoader()" role="status" aria-label="Loading portfolio">
+    <p class="loader__label">Portfolio — Esubalew Gashaw</p>
+    <p class="loader__word serif" aria-hidden="true">
+      @for (word of [loaderWord()]; track word) {
+        <span>{{ word }}</span>
+      }
+    </p>
+    <p class="loader__count" aria-hidden="true">{{ loaderCount() }}</p>
+    <div class="loader__bar" aria-hidden="true"><span [style.transform]="'scaleX(' + loaderProgress() + ')'"></span></div>
+  </div>
+}
+<div class="scroll-progress" aria-hidden="true"><span #progress></span></div>
 
-      <div class="navbar__actions">
-        <button class="theme-toggle" type="button" (click)="toggleTheme()" aria-label="Toggle theme">
-          {{ theme === 'dark' ? '☀️' : '🌙' }}
-        </button>
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header class="header" [class.is-scrolled]="isScrolled()">
+  <div class="header__pill">
+    <a class="brand brand--pill" href="#home" (click)="$event.preventDefault(); scrollToTop()" aria-label="Esubalew Gashaw — back to top">
+      <span class="brand__ring" aria-hidden="true"><span class="brand__mark serif">EG</span></span>
+      <span class="brand__text">
+        <strong>Esubalew Gashaw</strong>
+        <small>{{ profile.title }}</small>
+      </span>
+    </a>
+    <span class="header__divider" aria-hidden="true"></span>
 
-        <button class="hamburger" [class.open]="isMobileMenuOpen" (click)="toggleMobileMenu()" aria-label="Toggle menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </div>
-  </nav>
+    <nav class="header__nav" aria-label="Primary">
+      @for (link of navLinks; track link.id) {
+        <a [href]="'#' + link.id"
+           [class.is-active]="activeSection() === link.id"
+           [attr.aria-current]="activeSection() === link.id ? 'true' : null"
+           (click)="$event.preventDefault(); scrollToSection(link.id)">{{ link.label }}</a>
+      }
+    </nav>
+    <span class="header__divider header__divider--nav" aria-hidden="true"></span>
 
-  <div class="mobile-overlay" [class.visible]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
-
-  <header class="hero" *ngIf="profile">
-    <div class="hero__mesh"></div>
-    <div class="hero__shape hero__shape--one"></div>
-    <div class="hero__shape hero__shape--two"></div>
-    <div class="hero__glow"></div>
-
-    <div class="container hero__inner">
-      <div class="hero__text">
-        <span class="badge">
-          <span class="badge__dot"></span>
-          {{ profile.availability }}
-        </span>
-
-        <p class="hero__eyebrow">Product-minded Full-Stack Developer</p>
-        <h1>{{ profile.name }}</h1>
-        <h2>{{ profile.title }}</h2>
-
-        <p class="hero__summary">
-          I design and deliver digital products that feel intuitive, scale cleanly,
-          and create measurable value for businesses and users.
-        </p>
-
-        <p class="hero__location">📍 {{ profile.location }}</p>
-
-        <div class="hero__meta" aria-label="Core technologies">
-          <span>Angular</span>
-          <span>React</span>
-          <span>Spring Boot</span>
-          <span>Flutter</span>
-        </div>
-
-        <div class="hero__cta">
-          <a href="#contact" class="btn btn--primary btn--magnetic">Book a Call →</a>
-          <a href="#projects" class="btn btn--ghost">Explore Work</a>
-          <a href="/assets/esubalew-resume.pdf" class="btn btn--secondary" target="_blank" rel="noopener">Download CV</a>
-        </div>
-
-        <div class="hero__trust" aria-label="Career highlights">
-          <div class="hero__metric">
-            <strong>3+</strong>
-            <span>Years</span>
-          </div>
-          <div class="hero__metric">
-            <strong>4+</strong>
-            <span>Projects</span>
-          </div>
-          <div class="hero__metric">
-            <strong>100%</strong>
-            <span>Ownership</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero__visual" aria-label="Profile preview">
-        <div class="hero__panel">
-          <div class="hero__panel-card hero__panel-card--top">
-            <span class="panel-label">Core Stack</span>
-            <strong>Angular • React • Spring Boot</strong>
-          </div>
-
-          <div class="hero__photo-wrap">
-            <div class="hero__ring hero__ring--one"></div>
-            <div class="hero__ring hero__ring--two"></div>
-            <img [src]="profile.photo" alt="{{ profile.name }}" class="hero__photo" />
-          </div>
-
-          <div class="hero__panel-card hero__panel-card--bottom">
-            <span class="panel-label">Available</span>
-            <strong>Freelance • Full-time</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <section class="companies">
-    <div class="container">
-      <p class="companies__label">Trusted by / worked with</p>
-      <div class="companies__row">
-        <span class="companies__item" *ngFor="let c of companies">{{ c }}</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="about" class="section" *ngIf="profile">
-    <div class="container">
-      <h3 class="section__title">About Me</h3>
-      <p class="about__text">{{ profile.about }}</p>
-      <blockquote class="manifesto">"{{ profile.manifesto }}"</blockquote>
-
-      <div class="skills">
-        <div class="skills__group" *ngFor="let group of skillGroups">
-          <h4>{{ group.title }}</h4>
-          <div class="skills__chips">
-            <span class="chip" *ngFor="let skill of group.skills">{{ skill }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="stats-section" class="stats">
-    <div class="container stats__grid">
-      <div class="stats__item" *ngFor="let s of stats; let i = index">
-        <span class="stats__value">{{ animatedValues[i] }}{{ s.suffix }}</span>
-        <span class="stats__label">{{ s.label }}</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="process" class="section section--alt">
-    <div class="container">
-      <h3 class="section__title">How I Work</h3>
-      <div class="process-grid">
-        <div class="process-card" *ngFor="let step of processSteps">
-          <span class="process-card__step">{{ step.step }}</span>
-          <h4>{{ step.title }}</h4>
-          <p>{{ step.description }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="experience" class="section">
-    <div class="container">
-      <h3 class="section__title">Professional Experience</h3>
-      <div class="timeline">
-        <div class="timeline__item" *ngFor="let exp of experiences">
-          <div class="timeline__marker"></div>
-          <div class="timeline__content">
-            <span class="timeline__period">{{ exp.period }} · {{ exp.location }}</span>
-            <h4>{{ exp.role }} — {{ exp.company }}</h4>
-            <p>{{ exp.description }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--alt outcomes">
-    <div class="container">
-      <h3 class="section__title">What I Deliver</h3>
-
-      <div class="outcomes__grid">
-        <article class="outcome-card" *ngFor="let item of outcomeHighlights">
-          <span class="outcome-card__value">{{ item.value }}</span>
-          <h4>{{ item.title }}</h4>
-          <p>{{ item.description }}</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects" class="section section--alt">
-    <div class="container">
-      <h3 class="section__title">Projects</h3>
-
-      <div class="project-filters" aria-label="Project filters">
-        <button
-          type="button"
-          *ngFor="let filter of projectFilters"
-          class="filter-btn"
-          [class.active]="selectedFilter === filter"
-          (click)="filterProjects(filter)">
-          {{ filter === 'all' ? 'All' : filter }}
-        </button>
-      </div>
-
-      <div class="projects-grid">
-        <div class="card card--glass" *ngFor="let project of filteredProjects">
-          <div class="card__image-wrap">
-            <img [src]="project.image" [alt]="project.title" class="card__image" />
-            <span class="card__period card__period--overlay">{{ project.period }}</span>
-          </div>
-
-          <div class="card__body">
-            <h4>{{ project.title }}</h4>
-            <p class="card__role">{{ project.role }}</p>
-            <p class="card__stack" *ngIf="project.stack">{{ project.stack }}</p>
-
-            <ul class="card__bullets">
-              <li *ngFor="let point of project.bullets">{{ point }}</li>
-            </ul>
-
-            <div class="card__actions">
-              <button type="button" class="project-detail-btn" (click)="openProject(project)">
-                View Details
-              </button>
-              <a *ngIf="project.demoUrl"
-                 [href]="project.demoUrl"
-                 target="_blank"
-                 rel="noopener"
-                 class="project-link-btn">
-                Live Demo
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="education" class="section">
-    <div class="container">
-      <h3 class="section__title">Education</h3>
-      <div class="timeline">
-        <div class="timeline__item" *ngFor="let edu of education">
-          <div class="timeline__marker"></div>
-          <div class="timeline__content">
-            <span class="timeline__period">{{ edu.period }}</span>
-            <h4>{{ edu.title }}</h4>
-            <p class="card__role">{{ edu.school }}</p>
-            <ul *ngIf="edu.details.length">
-              <li *ngFor="let d of edu.details">{{ d }}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <h4 class="certs__title">Certificates</h4>
-      <ul class="certs">
-        <li *ngFor="let cert of certificates">🎓 {{ cert }}</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="section testimonials">
-    <div class="container">
-      <h3 class="section__title">What I Bring</h3>
-
-      <div class="testimonials__grid">
-        <article class="testimonial" *ngFor="let item of testimonials">
-          <p class="testimonial__quote">"{{ item.quote }}"</p>
-          <div class="testimonial__author">{{ item.author }}</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section why-hire">
-    <div class="container">
-      <h3 class="section__title">Why Hire Me</h3>
-
-      <div class="why-hire__grid">
-        <article class="why-hire__card" *ngFor="let item of hireReasons">
-          <div class="why-hire__icon">✓</div>
-          <h4>{{ item.title }}</h4>
-          <p>{{ item.description }}</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="final-cta">
-    <div class="container">
-      <h3>Have a project in mind?</h3>
-      <p>{{ profile.responsePromise }}.</p>
-      <a href="#contact" class="btn btn--primary btn--magnetic">Let's Build Something →</a>
-    </div>
-  </section>
-
-  <section id="contact" class="section contact" *ngIf="profile">
-    <div class="container contact__inner">
-      <h3 class="section__title">Get In Touch</h3>
-      <p>I'm open to junior/mid frontend and full-stack opportunities. Feel free to reach out.</p>
-
-      <form class="contact-form" (ngSubmit)="submitContactForm()" novalidate>
-        <div class="contact-form__field">
-          <label for="contact-name">Name</label>
-          <input
-            id="contact-name"
-            name="name"
-            type="text"
-            [(ngModel)]="contact.name"
-            required
-            [class.contact-form__input--error]="(contactSubmitted && !!contactErrors.name) || (!!contact.name.trim() && !!contactErrors.name)"
-            (input)="validateContactField('name')"
-            (blur)="validateContactField('name')"
-          />
-          <div class="form-feedback" *ngIf="contactSubmitted || contact.name.trim().length > 0">{{ contactErrors.name || '' }}</div>
-        </div>
-
-        <div class="contact-form__field">
-          <label for="contact-email">Email</label>
-          <input
-            id="contact-email"
-            name="email"
-            type="email"
-            [(ngModel)]="contact.email"
-            required
-            email
-            [class.contact-form__input--error]="(contactSubmitted && !!contactErrors.email) || (!!contact.email.trim() && !!contactErrors.email)"
-            (input)="validateContactField('email')"
-            (blur)="validateContactField('email')"
-          />
-          <div class="form-feedback" *ngIf="contactSubmitted || contact.email.trim().length > 0">{{ contactErrors.email || '' }}</div>
-        </div>
-
-        <div class="contact-form__field">
-          <label for="contact-message">Message</label>
-          <textarea
-            id="contact-message"
-            name="message"
-            rows="5"
-            [(ngModel)]="contact.message"
-            required
-            [class.contact-form__input--error]="(contactSubmitted && !!contactErrors.message) || (!!contact.message.trim() && !!contactErrors.message)"
-            (input)="validateContactField('message')"
-            (blur)="validateContactField('message')"
-          ></textarea>
-          <div class="form-feedback" *ngIf="contactSubmitted || contact.message.trim().length > 0">{{ contactErrors.message || '' }}</div>
-        </div>
-
-        <button type="submit" class="btn btn--primary btn--magnetic form-submit">Send Message</button>
-
-        <div class="form-feedback success" *ngIf="submitSuccess">
-          Your email app should open with your message. If it does not, email me at {{ profile.email }}.
-        </div>
-      </form>
-
-      <div class="contact__links">
-        <a [href]="'mailto:' + profile.email">✉️ {{ profile.email }}</a>
-        <a [href]="'tel:' + profile.phone">📞 {{ profile.phone }}</a>
-        <a [href]="'https://' + profile.linkedin" target="_blank" rel="noopener">🔗 {{ profile.linkedin }}</a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <p>© {{ currentYear }} {{ profile.name }}. Built with Angular.</p>
-  </footer>
-
-  <div class="project-modal" *ngIf="selectedProject" (click)="closeProject()">
-    <div class="project-modal__content" (click)="$event.stopPropagation()">
-      <button type="button" class="project-modal__close" (click)="closeProject()" aria-label="Close project details">×</button>
-
-      <div class="project-modal__image-wrap">
-        <img [src]="selectedProject.image" [alt]="selectedProject.title" class="project-modal__image" />
-      </div>
-
-      <div class="project-modal__body">
-        <p class="project-modal__period">{{ selectedProject.period }}</p>
-        <h3>{{ selectedProject.title }}</h3>
-        <p class="project-modal__role">{{ selectedProject.role }}</p>
-        <p class="project-modal__stack" *ngIf="selectedProject.stack">{{ selectedProject.stack }}</p>
-
-        <ul class="project-modal__list">
-          <li *ngFor="let point of selectedProject.bullets">{{ point }}</li>
-        </ul>
-
-        <div class="project-modal__actions" *ngIf="selectedProject.demoUrl || selectedProject.sourceUrl">
-          <a *ngIf="selectedProject.demoUrl" [href]="selectedProject.demoUrl" target="_blank" rel="noopener" class="project-link-btn project-link-btn--modal">
-            Open Live Project
-          </a>
-          <a *ngIf="selectedProject.sourceUrl" [href]="selectedProject.sourceUrl" target="_blank" rel="noopener" class="project-link-btn project-link-btn--modal project-link-btn--secondary">
-            Source Code
-          </a>
-        </div>
-      </div>
+    <div class="header__actions">
+      <button type="button" class="icon-btn icon-btn--sm theme-toggle" (click)="toggleTheme()"
+              [attr.aria-label]="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+              [title]="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+        <app-icon [name]="theme() === 'dark' ? 'sun' : 'moon'" />
+      </button>
+      <a class="btn btn--dark btn--sm header__cta" href="#contact" (click)="$event.preventDefault(); scrollToSection('contact')">
+        Hire Me <app-icon name="arrowRight" />
+      </a>
+      <button #menuButton type="button" class="icon-btn icon-btn--sm header__menu-btn" (click)="toggleMenu()"
+              [attr.aria-expanded]="menuOpen()" aria-controls="mobile-menu"
+              [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'">
+        <app-icon [name]="menuOpen() ? 'close' : 'menu'" />
+      </button>
     </div>
   </div>
 
-  <button class="back-to-top" [class.visible]="showBackToTop" (click)="scrollToTop()" aria-label="Back to top">
-    ↑
-  </button>
-</div>
+  <div id="mobile-menu" class="mobile-menu" [class.is-open]="menuOpen()" [attr.inert]="menuOpen() ? null : ''">
+    <nav aria-label="Mobile">
+      @for (link of navLinks; track link.id) {
+        <a [href]="'#' + link.id" [class.is-active]="activeSection() === link.id"
+           (click)="$event.preventDefault(); scrollToSection(link.id)">{{ link.label }}</a>
+      }
+    </nav>
+    <div class="mobile-menu__actions">
+      <a class="btn btn--outline" [href]="profile.resumeUrl" download="Esubalew-Gashaw-CV.pdf">
+        <app-icon name="download" /> Download CV
+      </a>
+      <a class="btn btn--primary" href="#contact" (click)="$event.preventDefault(); scrollToSection('contact')">
+        Hire Me <app-icon name="arrowRight" />
+      </a>
+    </div>
+  </div>
+</header>
+<div class="menu-backdrop" [class.is-open]="menuOpen()" (click)="closeMenu()"></div>
+
+<main id="main">
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section id="home" class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+
+    <div class="container hero__inner">
+      <div class="hero__content">
+        <p class="eyebrow eyebrow--line hero__fade" style="--d: 0s">Hi, I’m Esubalew Gashaw</p>
+
+        <h1 class="hero__title hero__fade" style="--d: 0.08s">
+          Building banking &amp; web platforms
+          <span class="hero__accent serif">people can trust.</span>
+        </h1>
+
+        <p class="hero__role hero__fade" style="--d: 0.16s">
+          A @for (role of [roleWord()]; track role) {<span class="hero__role-word serif">{{ role }}</span>} developer based in {{ profile.location }}.
+        </p>
+
+        <div class="hero__actions hero__fade" style="--d: 0.24s">
+          <a class="btn btn--primary btn--lg" href="#projects" (click)="$event.preventDefault(); scrollToSection('projects')">
+            View My Work <app-icon name="arrowRight" />
+          </a>
+          <a class="btn-link btn-link--light" [href]="profile.resumeUrl" download="Esubalew-Gashaw-CV.pdf">
+            Download CV <app-icon name="arrowDownRight" />
+          </a>
+        </div>
+
+        <div class="hero__meta hero__fade" style="--d: 0.32s">
+          <span class="status-pill"><span class="status-dot"></span>{{ profile.availability }}</span>
+          <div class="hero__socials">
+            @for (link of socialLinks; track link.label) {
+              <a class="social-btn" [href]="link.url" target="_blank" rel="noopener" [attr.aria-label]="link.label" [title]="link.label">
+                <app-icon [name]="link.icon" />
+              </a>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__visual hero__fade" style="--d: 0.2s">
+        <div class="hero__stage">
+          <span class="hero__circle" aria-hidden="true"></span>
+          <!-- Slowly rotating 3D wireframe globe inside the circle, behind the portrait -->
+          <app-three-scene class="hero__three" variant="globe" />
+          <!-- Masked to the circle's lower half + everything above it, so the head rises out of the frame -->
+          <div class="hero__portrait-wrap">
+            <img class="hero__portrait" [src]="profile.cutout" [alt]="'Portrait of ' + profile.name"
+                 width="720" height="520" fetchpriority="high" />
+          </div>
+          <div class="float-card">
+            <span class="float-card__icon"><app-icon name="briefcase" /></span>
+            <span>
+              <strong>{{ currentRole.role }}</strong>
+              <small>{{ currentRole.company }} · Current</small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social proof: organisations I've delivered for -->
+    <div class="container hero__trust hero__fade" style="--d: 0.4s">
+      <p class="hero__trust-label">Delivered work for</p>
+      <ul class="hero__trust-list">
+        @for (client of clients; track client) {
+          <li>{{ client }}</li>
+        }
+      </ul>
+      <a class="scroll-cue" href="#about" (click)="$event.preventDefault(); scrollToSection('about')" aria-label="Scroll to About">
+        <span>Scroll</span>
+        <span class="scroll-cue__line" aria-hidden="true"><span></span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════════════ HIGHLIGHTS ═══════════════ -->
+  <section class="highlights" aria-label="Highlights">
+    <div class="container highlights__grid">
+      @for (item of highlights; track item.number) {
+        <div class="highlight reveal">
+          <span class="highlight__icon"><app-icon [name]="item.icon" /></span>
+          <div>
+            <span class="highlight__num">{{ item.number }}</span>
+            <h2 class="highlight__title">{{ item.title }}</h2>
+            <p class="highlight__text">{{ item.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ═══════════════ ABOUT ═══════════════ -->
+  <section id="about" class="section">
+    <div class="container about">
+      <div class="about__content reveal">
+        <p class="eyebrow">About me</p>
+        <h2 class="section-title">Turning complex requirements into <span class="text-accent serif">reliable software.</span></h2>
+        <p class="about__text">{{ profile.about }}</p>
+        <blockquote class="about__quote">“{{ profile.manifesto }}”</blockquote>
+
+        <div class="about__actions">
+          <a class="btn btn--primary" [href]="profile.resumeUrl" download="Esubalew-Gashaw-CV.pdf">
+            <app-icon name="download" /> Download CV
+          </a>
+          <a class="btn btn--outline" href="#contact" (click)="$event.preventDefault(); scrollToSection('contact')">Let’s talk</a>
+        </div>
+      </div>
+
+      <aside class="about__panel card reveal" aria-label="At a glance">
+        <h3 class="about__panel-title">At a glance</h3>
+        <ul class="about__facts">
+          <li><span class="about__fact-icon"><app-icon name="briefcase" /></span>
+            <span><small>Current role</small>{{ currentRole.role }} at {{ currentRole.company }}</span></li>
+          <li><span class="about__fact-icon"><app-icon name="graduation" /></span>
+            <span><small>Education</small>{{ education[0].title }}, {{ education[0].school }}</span></li>
+          <li><span class="about__fact-icon"><app-icon name="mapPin" /></span>
+            <span><small>Location</small>{{ profile.location }}</span></li>
+          <li><span class="about__fact-icon"><app-icon name="mail" /></span>
+            <span><small>Email</small><a [href]="'mailto:' + profile.email">{{ profile.email }}</a></span></li>
+        </ul>
+
+        <dl class="stats" #statsBlock>
+          @for (stat of stats; track stat.label; let i = $index) {
+            <div class="stats__item spotlight">
+              <dt>{{ stat.label }}</dt>
+              <dd>{{ statDisplay()[i] }}</dd>
+            </div>
+          }
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SERVICES ═══════════════ -->
+  <section id="services" class="section section--alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">What I offer</p>
+        <h2 class="section-title">Services built for <span class="text-accent serif">real business needs</span></h2>
+        <p class="section-sub">From the first wireframe to production support — one developer across the whole stack.</p>
+      </div>
+
+      <div class="services-grid">
+        @for (service of services; track service.name; let i = $index) {
+          <article class="service-card card spotlight reveal">
+            <span class="service-card__icon"><app-icon [name]="service.icon" /></span>
+            <p class="service-card__label">Service {{ (i + 1).toString().padStart(2, '0') }}</p>
+            <h3 class="service-card__title">{{ service.name }}</h3>
+            <p class="service-card__text">{{ service.description }}</p>
+          </article>
+        }
+      </div>
+    </div>
+
+    <div class="tech-strip" role="region" aria-label="Technologies I work with">
+      <div class="tech-strip__track">
+        @for (skill of techStrip; track $index) {
+          <span class="tech-strip__item" [attr.aria-hidden]="$index >= skills.length ? 'true' : null">
+            <span aria-hidden="true">{{ skill.icon }}</span> {{ skill.name }}
+          </span>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PROJECTS ═══════════════ -->
+  <section id="projects" class="section projects">
+    <!-- 3D particle wave rolling behind the heading -->
+    <app-three-scene class="projects__three" variant="wave" />
+    <div class="container projects__inner">
+      <div class="section-head reveal">
+        <p class="eyebrow">Portfolio</p>
+        <h2 class="section-title">Featured <span class="text-accent serif">projects</span></h2>
+        <p class="section-sub">Banking, healthcare, and web platforms I’ve built. Open any project for the full case study.</p>
+      </div>
+
+      <div class="filters reveal" role="group" aria-label="Filter projects by category">
+        @for (filter of projectFilters; track filter) {
+          <button type="button" class="filter" [class.is-active]="activeFilter() === filter"
+                  [attr.aria-pressed]="activeFilter() === filter" (click)="setFilter(filter)">
+            {{ filter }} <span class="filter__count">{{ countFor(filter) }}</span>
+          </button>
+        }
+      </div>
+      <p class="sr-only" aria-live="polite">Showing {{ visibleProjects().length }} of {{ projects.length }} projects</p>
+
+      <!-- reveal-group: cards wait offscreen, then rise in sequence when the grid scrolls into view -->
+      <div class="projects-grid reveal-group">
+        @for (project of visibleProjects(); track activeFilter() + '-' + project.id; let i = $index) {
+          <article class="project-card card spotlight tilt" [class.project-card--featured]="project.featured"
+                   [attr.data-span]="bentoSpan(i, visibleProjects().length)"
+                   [style.animation-delay]="(i * 120) + 'ms'">
+            <button type="button" class="project-card__media" (click)="openProject(project)"
+                    [attr.aria-label]="'View details for ' + project.title">
+              <img [src]="project.image" [alt]="project.title + ' screenshot'" loading="lazy" decoding="async" />
+              @if (project.featured) {
+                <span class="project-card__ribbon"><app-icon name="sparkles" /> Featured</span>
+              }
+              <span class="project-card__hint">View — <span class="serif">{{ project.title }}</span> <app-icon name="arrowRight" /></span>
+            </button>
+
+            <div class="project-card__body">
+              <div class="project-card__meta">
+                <span class="badge">{{ project.category }}</span>
+                <span class="project-card__period">@if (project.client) {<span class="project-card__client">{{ project.client }}</span> · }{{ project.period }}</span>
+              </div>
+              <h3 class="project-card__title">{{ project.title }}</h3>
+              <p class="project-card__summary">{{ project.summary }}</p>
+              <p class="project-card__impact"><app-icon name="zap" /> {{ project.impact }}</p>
+              <ul class="tag-list" aria-label="Technologies">
+                @for (tag of project.tags; track tag) {
+                  <li class="tag">{{ tag }}</li>
+                }
+              </ul>
+              <div class="project-card__footer">
+                <button type="button" class="btn-link" (click)="openProject(project)">
+                  View details <app-icon name="arrowRight" />
+                </button>
+                @if (project.demoUrl) {
+                  <a class="icon-btn icon-btn--sm" [href]="project.demoUrl" target="_blank" rel="noopener"
+                     [attr.aria-label]="'Open the live ' + project.title + ' site'" title="Live site">
+                    <app-icon name="external" />
+                  </a>
+                }
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <p class="projects-empty">No projects in this category yet.</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ EXPERIENCE & EDUCATION ═══════════════ -->
+  <section id="experience" class="section section--alt experience">
+    <!-- 3D career orbits: one ring per role around a glowing core -->
+    <app-three-scene class="experience__three" variant="orbit" />
+    <div class="container experience__inner">
+      <div class="section-head reveal">
+        <p class="eyebrow">Career</p>
+        <h2 class="section-title">Experience &amp; <span class="text-accent serif">education</span></h2>
+        <p class="section-sub">Over two years building software across Ethiopia’s banking and technology sectors.</p>
+      </div>
+
+      <div class="career">
+        <div class="career__col">
+          <h3 class="career__heading"><app-icon name="briefcase" /> Work experience</h3>
+          <ol class="timeline" #timeline>
+            @for (exp of experiences; track exp.company + exp.period; let i = $index) {
+              <li class="timeline__item reveal" [class.is-current]="isCurrentRole(exp)" [style.transition-delay]="(i * 0.12) + 's'">
+                <span class="timeline__dot" aria-hidden="true"></span>
+                <div class="card spotlight tilt timeline__card">
+                  <div class="timeline__top">
+                    <span class="timeline__period">{{ exp.period }}</span>
+                    @if (isCurrentRole(exp)) {
+                      <span class="badge badge--success">Current</span>
+                    }
+                  </div>
+                  <h4 class="timeline__role">{{ exp.role }}</h4>
+                  <p class="timeline__company">{{ exp.company }} · {{ exp.location }}</p>
+                  <p class="timeline__text">{{ exp.description }}</p>
+                </div>
+              </li>
+            }
+          </ol>
+        </div>
+
+        <div class="career__col">
+          <h3 class="career__heading"><app-icon name="graduation" /> Education</h3>
+          @for (edu of education; track edu.title) {
+            <div class="card spotlight tilt edu-card reveal">
+              <div class="timeline__top">
+                <span class="timeline__period">{{ edu.period }}</span>
+                <span class="badge">CGPA 3.66</span>
+              </div>
+              <h4 class="timeline__role">{{ edu.title }}</h4>
+              <p class="timeline__company">{{ edu.school }}</p>
+              <ul class="check-list">
+                @for (detail of edu.details; track detail) {
+                  <li><app-icon name="check" /> {{ detail }}</li>
+                }
+              </ul>
+            </div>
+          }
+
+          <h3 class="career__heading career__heading--spaced"><app-icon name="award" /> Certifications</h3>
+          <ul class="cert-list">
+            @for (cert of certificates; track cert.name; let i = $index) {
+              <li class="card spotlight tilt cert reveal" [style.transition-delay]="(i * 0.1) + 's'">
+                <span class="cert__icon"><app-icon name="award" /></span>
+                <span>
+                  <strong>{{ cert.name }}</strong>
+                  <small>{{ cert.issuer }}</small>
+                </span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ WHY WORK WITH ME ═══════════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Why work with me</p>
+        <h2 class="section-title">Committed to <span class="text-accent serif">quality</span> in every detail</h2>
+        <p class="section-sub">What employers and clients can expect when we work together.</p>
+      </div>
+      <div class="values-grid">
+        @for (value of values; track value.number) {
+          <div class="value card spotlight reveal">
+            <span class="value__num" aria-hidden="true">{{ value.number }}</span>
+            <span class="value__icon"><app-icon [name]="value.icon" /></span>
+            <h3 class="value__title">{{ value.title }}</h3>
+            <p class="value__text">{{ value.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CONTACT ═══════════════ -->
+  <section id="contact" class="contact">
+    <div class="contact__bg" aria-hidden="true"></div>
+    <!-- 3D particle field with a drifting wireframe knot behind the contact band -->
+    <app-three-scene class="contact__three" variant="field" />
+    <div class="contact__marquee" aria-hidden="true">
+      <div class="contact__marquee-track">
+        @for (n of marqueeRepeats; track $index) {
+          <span>Let’s build something great <span class="contact__marquee-dot">•</span></span>
+        }
+      </div>
+    </div>
+    <div class="container contact__inner">
+      <div class="contact__intro reveal">
+        <p class="eyebrow eyebrow--line">Get in touch</p>
+        <h2 class="contact__title">Let’s build something <span class="hero__accent serif">great together.</span></h2>
+        <p class="contact__text">
+          Open to full-time roles and freelance projects. Tell me about your team or idea. {{ profile.responsePromise }}.
+        </p>
+
+        <ul class="contact-list">
+          @for (link of contactLinks; track link.label) {
+            <li class="contact-list__item">
+              <a class="contact-list__link" [href]="link.url" [attr.target]="link.external ? '_blank' : null" [attr.rel]="link.external ? 'noopener' : null">
+                <span class="contact-list__icon"><app-icon [name]="link.icon" /></span>
+                <span class="contact-list__text">
+                  <small>{{ link.label }}</small>
+                  <strong>{{ link.value }}</strong>
+                </span>
+              </a>
+              @if (link.icon === 'mail') {
+                <button type="button" class="icon-btn icon-btn--sm icon-btn--on-dark" (click)="copyEmail()" aria-label="Copy email address" title="Copy email">
+                  <app-icon name="copy" />
+                </button>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+
+      <form class="contact-form card reveal" [formGroup]="contactForm" (ngSubmit)="submitContact()" novalidate>
+        <h3 class="contact-form__title">Send a message</h3>
+        <p class="contact-form__note">Opens your email app with everything filled in.</p>
+
+        <div class="field-row">
+          <div class="field" [class.field--error]="showContactError('name')">
+            <label for="contact-name">Name</label>
+            <input id="contact-name" type="text" formControlName="name" autocomplete="name" placeholder="Your name"
+                   [attr.aria-invalid]="showContactError('name')" aria-describedby="contact-name-error" />
+            @if (showContactError('name')) {
+              <p class="field__error" id="contact-name-error">{{ contactError('name') }}</p>
+            }
+          </div>
+          <div class="field" [class.field--error]="showContactError('email')">
+            <label for="contact-email">Email</label>
+            <input id="contact-email" type="email" formControlName="email" autocomplete="email" inputmode="email"
+                   placeholder="you@company.com" [attr.aria-invalid]="showContactError('email')" aria-describedby="contact-email-error" />
+            @if (showContactError('email')) {
+              <p class="field__error" id="contact-email-error">{{ contactError('email') }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="field" [class.field--error]="showContactError('message')">
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" rows="5" formControlName="message" placeholder="Tell me about the role or project"
+                    [attr.aria-invalid]="showContactError('message')" aria-describedby="contact-message-error"></textarea>
+          @if (showContactError('message')) {
+            <p class="field__error" id="contact-message-error">{{ contactError('message') }}</p>
+          }
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--block">Send message <app-icon name="arrowRight" /></button>
+        @if (draftOpened()) {
+          <p class="form-success" role="status">
+            Your email app should open with the message ready. If it doesn’t, email me at
+            <a [href]="'mailto:' + profile.email">{{ profile.email }}</a>.
+          </p>
+        }
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <a class="brand" href="#home" (click)="$event.preventDefault(); scrollToTop()" aria-label="Esubalew Gashaw — back to top">
+      <span class="brand__mark" aria-hidden="true">EG</span>
+      <span class="brand__text">
+        <strong>Esubalew Gashaw</strong>
+        <small>{{ profile.title }}</small>
+      </span>
+    </a>
+    <nav class="footer__nav" aria-label="Footer">
+      @for (link of navLinks; track link.id) {
+        <a [href]="'#' + link.id" (click)="$event.preventDefault(); scrollToSection(link.id)">{{ link.label }}</a>
+      }
+    </nav>
+    <div class="footer__socials">
+      @for (link of socialLinks; track link.label) {
+        <a class="icon-btn icon-btn--sm" [href]="link.url" target="_blank" rel="noopener" [attr.aria-label]="link.label" [title]="link.label">
+          <app-icon [name]="link.icon" />
+        </a>
+      }
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <p>© {{ currentYear }} {{ profile.name }}. All rights reserved.</p>
+    <p>Designed &amp; built with Angular.</p>
+  </div>
+</footer>
+
+<!-- ═══════════════ PROJECT CASE STUDY MODAL ═══════════════ -->
+@if (selectedProject(); as project) {
+  <div class="modal-overlay" (click)="closeProject()">
+    <div class="modal" #modal role="dialog" aria-modal="true" aria-labelledby="modal-title" (click)="$event.stopPropagation()">
+      <button type="button" class="icon-btn modal__close" (click)="closeProject()" aria-label="Close project details">
+        <app-icon name="close" />
+      </button>
+
+      <a class="modal__media" [href]="project.image" target="_blank" rel="noopener" title="Open full-size image">
+        <img [src]="project.image" [alt]="project.title + ' screenshot'" />
+        <span class="modal__zoom"><app-icon name="external" /> Full size</span>
+      </a>
+
+      <div class="modal__body">
+        <div class="project-card__meta">
+          <span class="badge">{{ project.category }}</span>
+          <span class="project-card__period">@if (project.client) {<span class="project-card__client">{{ project.client }}</span> · }{{ project.period }}</span>
+        </div>
+        <h3 id="modal-title" class="modal__title">{{ project.title }}</h3>
+        <p class="modal__role">{{ project.role }}@if (project.client) { · Client: <strong>{{ project.client }}</strong>}</p>
+        <p class="modal__desc">{{ project.description }}</p>
+
+        <p class="project-card__impact"><app-icon name="zap" /> {{ project.impact }}</p>
+
+        <h4 class="modal__heading">Key results</h4>
+        <ul class="check-list">
+          @for (bullet of project.bullets; track $index) {
+            <li><app-icon name="check" /> {{ bullet }}</li>
+          }
+        </ul>
+
+        <h4 class="modal__heading">Tech stack</h4>
+        <ul class="tag-list">
+          @for (tag of project.tags; track tag) {
+            <li class="tag">{{ tag }}</li>
+          }
+        </ul>
+
+        @if (project.demoUrl || project.sourceUrl) {
+          <div class="modal__actions">
+            @if (project.demoUrl) {
+              <a class="btn btn--primary btn--sm" [href]="project.demoUrl" target="_blank" rel="noopener">Live site <app-icon name="external" /></a>
+            }
+            @if (project.sourceUrl) {
+              <a class="btn btn--outline btn--sm" [href]="project.sourceUrl" target="_blank" rel="noopener"><app-icon name="github" /> Source</a>
+            }
+          </div>
+        }
+      </div>
+
+      @if (modalPosition().total > 1) {
+        <div class="modal__footer">
+          <button type="button" class="btn btn--outline btn--sm" (click)="stepProject(-1)"><app-icon name="chevronLeft" /> Previous</button>
+          <span class="modal__counter">{{ modalPosition().index + 1 }} / {{ modalPosition().total }}</span>
+          <button type="button" class="btn btn--outline btn--sm" (click)="stepProject(1)">Next <app-icon name="chevronRight" /></button>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (toast(); as message) {
+  <div class="toast" role="status"><app-icon name="check" /> {{ message }}</div>
+}
+
+<button type="button" class="back-to-top" [class.is-visible]="showBackToTop()" (click)="scrollToTop()" aria-label="Back to top">
+  <svg class="back-to-top__ring" viewBox="0 0 48 48" aria-hidden="true">
+    <circle class="back-to-top__track" cx="24" cy="24" r="22" />
+    <circle #ring class="back-to-top__progress" cx="24" cy="24" r="22" />
+  </svg>
+  <app-icon name="arrowUp" />
+</button>

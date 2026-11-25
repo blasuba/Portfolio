@@ -1,1 +1,533 @@
-/* You can add global styles to this file, and also import other style files */
+// ═══════════════════════════════════════════════════════════
+// GLOBAL DESIGN SYSTEM — tokens, base, and shared primitives
+// Navy + amber, Poppins. Light and dark themes via html[data-theme].
+// Section layout lives in src/app/app.scss. Fonts load in src/index.html.
+// ═══════════════════════════════════════════════════════════
+
+$ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+// ─────────────────────────── Theme tokens ───────────────────────────
+
+:root,
+html[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f6f8fc;
+  --bg-alt: #eaf0f7;
+  --surface: #ffffff;
+  --surface-2: #f1f5fa;
+  --border: rgba(10, 26, 51, 0.1);
+  --border-strong: rgba(10, 26, 51, 0.18);
+  --text: #0a1a33;
+  --text-2: #46566e;
+  --text-3: #5f6f86;
+  --accent: #f59e0b;
+  --accent-hover: #fbad24;
+  --accent-text: #b45309; // amber that passes AA on light surfaces
+  --accent-soft: rgba(245, 158, 11, 0.14);
+  --on-accent: #0a1a33;
+  --navy: #0a1a33;
+  --success: #15803d;
+  --success-soft: rgba(21, 128, 61, 0.12);
+  --danger: #dc2626;
+  --header-bg: rgba(246, 248, 252, 0.86);
+  --shadow-sm: 0 1px 2px rgba(10, 26, 51, 0.06), 0 2px 8px rgba(10, 26, 51, 0.04);
+  --shadow: 0 10px 30px -12px rgba(10, 26, 51, 0.18);
+  --shadow-lg: 0 24px 60px -20px rgba(10, 26, 51, 0.28);
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0a1120;
+  --bg-alt: #0e1729;
+  --surface: #121d31;
+  --surface-2: #17243b;
+  --border: rgba(226, 232, 240, 0.09);
+  --border-strong: rgba(226, 232, 240, 0.18);
+  --text: #e8eef6;
+  --text-2: #a7b4c6;
+  --text-3: #8b9ab0;
+  --accent: #f59e0b;
+  --accent-hover: #fbbf24;
+  --accent-text: #fbbf24;
+  --accent-soft: rgba(245, 158, 11, 0.16);
+  --on-accent: #0a1a33;
+  --navy: #071022;
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.14);
+  --danger: #f87171;
+  --header-bg: rgba(10, 17, 32, 0.84);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+}
+
+// ─────────────────────────── Base ───────────────────────────
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px; // floating header height
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &.no-scroll { overflow: hidden; }
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button, input, textarea { font: inherit; color: inherit; }
+ul, ol { list-style: none; }
+h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -0.01em; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+::selection { background: var(--accent); color: var(--on-accent); }
+
+// ─────────────────────────── Helpers ───────────────────────────
+
+.container {
+  width: min(1200px, 100% - 2.5rem);
+  margin-inline: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 400;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform 0.2s ease;
+
+  &:focus { transform: none; }
+}
+
+.text-accent { color: var(--accent-text); }
+
+// Small uppercase label above headings
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  color: var(--accent-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  &--line::before {
+    content: '';
+    display: none;
+    flex-shrink: 0;
+    width: 36px;
+    height: 1.5px;
+    background: currentColor;
+
+    @media (min-width: 640px) { display: block; }
+  }
+}
+
+.app-icon,
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 1.1em;
+  height: 1.1em;
+
+  svg { width: 100%; height: 100%; }
+}
+
+// ─────────────────────────── Surfaces ───────────────────────────
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s $ease, box-shadow 0.3s $ease, border-color 0.3s ease, background-color 0.3s ease;
+}
+
+// ─────────────────────────── Buttons ───────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.2s $ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  .icon { transition: transform 0.2s $ease; }
+  &:hover .icon { transform: translateX(3px); }
+  &:active { transform: translateY(1px); }
+
+  &--primary {
+    background: var(--accent);
+    color: var(--on-accent);
+    box-shadow: 0 12px 28px -12px rgba(245, 158, 11, 0.7);
+
+    &:hover { background: var(--accent-hover); box-shadow: 0 16px 34px -12px rgba(245, 158, 11, 0.8); }
+  }
+
+  &--dark {
+    background: var(--navy);
+    color: #fff;
+
+    .icon { color: var(--accent); }
+    &:hover { background: #12305a; }
+  }
+
+  &--outline {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border-strong);
+
+    &:hover { border-color: var(--accent); color: var(--accent-text); }
+  }
+
+  &--sm { min-height: 40px; padding: 0.55rem 1.1rem; font-size: 0.88rem; }
+  &--lg { min-height: 54px; padding: 0.9rem 1.85rem; font-size: 1rem; }
+  &--block { width: 100%; }
+}
+
+html[data-theme='dark'] .btn--dark {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+
+  &:hover { background: #1f2f4b; }
+}
+
+// Text link with trailing arrow
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.25rem;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  .icon { color: var(--accent-text); transition: transform 0.2s $ease; }
+  &:hover { color: var(--accent-text); }
+  &:hover .icon { transform: translate(3px, 0); }
+
+  &--light { color: #fff; .icon { color: var(--accent); } &:hover { color: var(--accent); } }
+}
+
+// Round icon button (theme toggle, socials, close)
+.icon-btn {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease, transform 0.2s $ease;
+
+  &:hover { border-color: var(--accent); color: var(--accent-text); }
+
+  &--sm { width: 38px; height: 38px; font-size: 1rem; }
+
+  &--on-dark {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+
+    &:hover { border-color: var(--accent); color: var(--accent); }
+  }
+}
+
+// ─────────────────────────── Badges & tags ───────────────────────────
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &--success { background: var(--success-soft); color: var(--success); }
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag {
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 0.76rem;
+  font-weight: 500;
+}
+
+.check-list {
+  display: grid;
+  gap: 0.6rem;
+
+  li {
+    display: flex;
+    gap: 0.65rem;
+    color: var(--text-2);
+    font-size: 0.93rem;
+  }
+
+  .icon { margin-top: 0.25rem; color: var(--success); }
+}
+
+// ─────────────────────────── Display serif accent ───────────────────────────
+// Elegant italic serif for accent words in headings ("Featured *projects*").
+
+.serif {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+// ─────────────────────────── Interactive polish ───────────────────────────
+
+// Cursor spotlight: --mx/--my are set from the pointer position (see App.updatePointerEffects).
+.spotlight {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 60%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  &:hover::before { opacity: 1; }
+  > * { position: relative; z-index: 1; }
+}
+
+// Light sweep across primary buttons on hover
+.btn--primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.75s $ease;
+  }
+
+  &:hover::after { transform: translateX(120%); }
+}
+
+// Outline buttons get an animated amber gradient ring on hover
+.btn--outline {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24, #f97316, #f59e0b);
+    background-size: 300% 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: gradient-shift 6s ease infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--surface);
+  }
+
+  &:hover { border-color: transparent; }
+  &:hover::before { opacity: 1; }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+// Theme toggle icon spins as the theme changes
+.theme-toggle .icon { transition: transform 0.5s $ease; }
+html[data-theme='dark'] .theme-toggle .icon { transform: rotate(180deg); }
+
+// ─────────────────────────── Toast & back-to-top ───────────────────────────
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  z-index: 350;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.2rem;
+  border-radius: 999px;
+  background: #0a1a33;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  transform: translateX(-50%);
+  animation: fade-in 0.2s ease both;
+
+  .icon { color: #4ade80; }
+}
+
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.1rem;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s $ease, color 0.2s ease;
+
+  &.is-visible { opacity: 1; transform: none; pointer-events: auto; }
+  &:hover { color: var(--accent-text); transform: translateY(-3px); }
+
+  .icon { position: relative; }
+
+  // Circular reading-progress indicator around the button
+  &__ring {
+    position: absolute;
+    inset: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    transform: rotate(-90deg);
+  }
+
+  &__track { fill: none; stroke: var(--border); stroke-width: 3; }
+
+  &__progress {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 138.23;
+    stroke-dashoffset: 138.23;
+  }
+}
+
+// ─────────────────────────── Scroll reveal ───────────────────────────
+// Only hidden once JS arms the observer (html.reveal-ready).
+
+.reveal-ready .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s $ease, transform 0.7s $ease;
+
+  &.is-visible { opacity: 1; transform: none; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+// ─────────────────────────── Reduced motion ───────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
